@@ -10,14 +10,17 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "bcrypt": "^5.1.1",
     "clsx": "^2.1.1",
     "heroicons": "^2.2.0",
     "next": "15.1.7",
+    "postgres": "^3.4.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
