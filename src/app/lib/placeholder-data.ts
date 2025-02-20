@@ -1,3 +1,4 @@
+/*
 const invoices = [
 	{
 		customer_id: customers[0].id,
@@ -12,3 +13,4 @@ const invoices = [
 		date: "2022-11-14",
 	},
 ];
+*/
