@@ -1,9 +1,9 @@
-import { obterProdutos } from "@/services/bling/produtos/produtos";
-import { ProdutosDadosBaseDTO } from "@/types/Bling/produto/ProdutosDadosBaseDTO";
+import { obterProdutos } from "@/app/services/bling/produtos/produtos";
+import { ProdutosDadosBaseDTO } from "@/app/types/Bling/produto/ProdutosDadosBaseDTO";
 import {
 	converterProdutosDadosBaseDTO,
 	Produto,
-} from "@/types/Escriva/Produto";
+} from "@/app/types/Escriva/Produto";
 
 export async function obterTodosOsProdutosAtivos() {
 	let pagina = 1;

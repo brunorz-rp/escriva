@@ -1,5 +1,5 @@
 import React from "react";
-import { PedidoDeCompra } from "@/types/Escriva/PedidoDeCompra";
+import { PedidoDeCompra } from "@/app/types/Escriva/PedidoDeCompra";
 
 interface PedidoDeCompraCardProperties {
 	pedido: PedidoDeCompra;

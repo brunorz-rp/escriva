@@ -1,10 +1,10 @@
-import FetchFromBling from "@/components/Buttons/fetch-from-bling";
-import FetchFromDB from "@/components/Buttons/fetch-from-db";
-import SaveToDB from "@/components/Buttons/save-to-db";
-import { inserirProduto } from "@/lib/estoque";
+import FetchFromBling from "@/app/components/Buttons/fetch-from-bling";
+import FetchFromDB from "@/app/components/Buttons/fetch-from-db";
+import SaveToDB from "@/app/components/Buttons/save-to-db";
+import { inserirProduto } from "@/app/lib/estoque";
 
-import { obterTodosOsProdutosAtivos } from "@/services/escriva/produtos/produtos";
-import { Produto } from "@/types/Escriva/Produto";
+import { obterTodosOsProdutosAtivos } from "@/app/services/escriva/produtos/produtos";
+import { Produto } from "@/app/types/Escriva/Produto";
 
 export default async function Page() {
 	const produtosDoBling: Array<Produto> = await obterTodosOsProdutosAtivos();

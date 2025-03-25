@@ -1,14 +1,14 @@
-import FetchFromBling from "@/components/Buttons/fetch-from-bling";
-import FetchFromDB from "@/components/Buttons/fetch-from-db";
-import SaveToDB from "@/components/Buttons/save-to-db";
+import FetchFromBling from "@/app/components/Buttons/fetch-from-bling";
+import FetchFromDB from "@/app/components/Buttons/fetch-from-db";
+import SaveToDB from "@/app/components/Buttons/save-to-db";
 
-import PedidoDeCompraCard from "@/components/Pedido-de-Compra/pedido-de-compra";
+import PedidoDeCompraCard from "@/app/components/Pedido-de-Compra/pedido-de-compra";
 
-import { fetchPedidosDeCompra } from "@/services/bling/pedidos/compras";
+import { fetchPedidosDeCompra } from "@/app/services/bling/pedidos/compras";
 // import { authorize } from "@/services/sheets/authorization";
 
-import { PedidoDeCompra as PedidoBling } from "@/types/Bling/PedidoDeCompra";
-import { PedidoDeCompra } from "@/types/Escriva/PedidoDeCompra";
+import { PedidoDeCompra as PedidoBling } from "@/app/types/Bling/PedidoDeCompra";
+import { PedidoDeCompra } from "@/app/types/Escriva/PedidoDeCompra";
 
 export default async function Page() {
 	const pedidosDeCompra = await getPedidosDeCompra();

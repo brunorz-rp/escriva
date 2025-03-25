@@ -1,12 +1,12 @@
-import FetchFromBling from "@/components/Buttons/fetch-from-bling";
-import FetchFromDB from "@/components/Buttons/fetch-from-db";
-import SaveToDB from "@/components/Buttons/save-to-db";
-import PedidoDeVendaCard from "@/components/Pedido-de-Venda/pedido-de-venda";
+import FetchFromBling from "@/app/components/Buttons/fetch-from-bling";
+import FetchFromDB from "@/app/components/Buttons/fetch-from-db";
+import SaveToDB from "@/app/components/Buttons/save-to-db";
+import PedidoDeVendaCard from "@/app/components/Pedido-de-Venda/pedido-de-venda";
 // import { listarUltimosDezPedidosDeVenda } from "@/lib/pedidos-de-venda";
 
-import { fetchPedidosDeVenda } from "@/services/bling/pedidos/vendas";
-import { PedidoDeVenda as PedidoBling } from "@/types/Bling/PedidoDeVenda";
-import { PedidoDeVenda } from "@/types/Escriva/PedidoDeVenda";
+import { fetchPedidosDeVenda } from "@/app/services/bling/pedidos/vendas";
+import { PedidoDeVenda as PedidoBling } from "@/app/types/Bling/PedidoDeVenda";
+import { PedidoDeVenda } from "@/app/types/Escriva/PedidoDeVenda";
 
 export default async function Page() {
 	//console.log(await listarUltimosDezPedidosDeVenda());
