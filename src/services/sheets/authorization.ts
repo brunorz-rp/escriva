@@ -23,6 +23,8 @@ export async function authorize() {
 				values: [["LULU", "GIGANTE", "MACHADAO"]],
 			},
 		});
+
+		return response;
 	} catch (error) {
 		throw error;
 	}

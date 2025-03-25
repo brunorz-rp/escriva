@@ -1,18 +1,17 @@
 import FetchFromBling from "@/components/Buttons/fetch-from-bling";
 import FetchFromDB from "@/components/Buttons/fetch-from-db";
 import SaveToDB from "@/components/Buttons/save-to-db";
+
 import PedidoDeCompraCard from "@/components/Pedido-de-Compra/pedido-de-compra";
-// import { listarUltimosDezPedidosDeCompra } from "@/lib/pedidos-de-compra";
 
 import { fetchPedidosDeCompra } from "@/services/bling/pedidos/compras";
-import { authorize } from "@/services/sheets/authorization";
+// import { authorize } from "@/services/sheets/authorization";
+
 import { PedidoDeCompra as PedidoBling } from "@/types/Bling/PedidoDeCompra";
 import { PedidoDeCompra } from "@/types/Escriva/PedidoDeCompra";
 
 export default async function Page() {
-	//console.log(await listarUltimosDezPedidosDeCompra());
-
-	const pedidosDeCompra = []; //await getPedidosDeCompra();
+	const pedidosDeCompra = await getPedidosDeCompra();
 
 	// authorize();	--	Escrever no google
 
