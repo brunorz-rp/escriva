@@ -12,13 +12,17 @@ import clsx from "clsx";
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-	{ name: "Home", href: "/dashboard", icon: HomeIcon },
+	{ name: "Produtos", href: "/produtos", icon: HomeIcon },
 	{
-		name: "Invoices",
-		href: "/dashboard/invoices",
+		name: "Pedidos de Compra",
+		href: "/pedidos-de-compra",
 		icon: DocumentDuplicateIcon,
 	},
-	{ name: "Customers", href: "/dashboard/customers", icon: UserGroupIcon },
+	{
+		name: "Pedidos de Venda",
+		href: "/pedidos-de-venda",
+		icon: DocumentDuplicateIcon,
+	},
 ];
 
 export default function NavLinks() {
