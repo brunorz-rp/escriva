@@ -1,10 +1,10 @@
 import FetchFromBling from "@/app/components/Buttons/fetch-from-bling";
 import FetchFromDB from "@/app/components/Buttons/fetch-from-db";
-import SaveToDB from "@/app/components/Buttons/save-to-db";
+import SaveToDB from "@/app/components/Buttons/salvar-no-banco";
 import PedidoDeVendaCard from "@/app/components/Pedido-de-Venda/pedido-de-venda";
 // import { listarUltimosDezPedidosDeVenda } from "@/lib/pedidos-de-venda";
 
-import { fetchPedidosDeVenda } from "@/app/services/bling/pedidos/vendas";
+import { fetchPedidosDeVenda } from "@/app/lib/bling/pedidos/vendas";
 import { PedidoDeVenda as PedidoBling } from "@/app/types/Bling/PedidoDeVenda";
 import { PedidoDeVenda } from "@/app/types/Escriva/PedidoDeVenda";
 
