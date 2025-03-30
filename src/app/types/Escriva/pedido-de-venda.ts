@@ -2,6 +2,6 @@ export type PedidoDeVenda = {
 	id: number;
 	numero: number;
 	data: Date;
-	contato: number;
+	comprador: string;
 	situacao: number;
 };

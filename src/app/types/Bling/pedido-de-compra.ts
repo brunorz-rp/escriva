@@ -12,5 +12,5 @@ export type PedidoDeCompra = {
 };
 
 type Situacao = {
-	valor: number
-}
+	valor: number;
+};
