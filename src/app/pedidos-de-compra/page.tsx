@@ -7,8 +7,8 @@ import PedidoDeCompraCard from "@/app/components/Pedido-de-Compra/pedido-de-comp
 import { fetchPedidosDeCompra } from "@/app/services/bling/pedidos/compras";
 // import { authorize } from "@/services/sheets/authorization";
 
-import { PedidoDeCompra as PedidoBling } from "@/app/types/Bling/PedidoDeCompra";
-import { PedidoDeCompra } from "@/app/types/Escriva/PedidoDeCompra";
+import { PedidoDeCompra as PedidoBling } from "@/app/types/Bling/pedido-de-compra";
+import { PedidoDeCompra } from "@/app/types/Escriva/pedido-de-compra";
 
 export default async function Page() {
 	const pedidosDeCompra = await getPedidosDeCompra();
