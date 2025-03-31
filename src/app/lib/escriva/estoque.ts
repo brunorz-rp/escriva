@@ -1,6 +1,6 @@
 import postgres from "postgres";
 
-import { Produto } from "@/app/types/Escriva/Produto";
+import { Produto } from "@/app/types/Escriva/Produto/Produto";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 

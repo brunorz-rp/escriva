@@ -35,7 +35,7 @@ export default async function TabelaDePedidosDeCompra({
 						<td className="whitespace-nowrap px-3 py-3">{index + 1}</td>
 						<td className="whitespace-nowrap px-3 py-3">{pedido.numero}</td>
 						<td className="whitespace-nowrap px-3 py-3">{pedido.situacao}</td>
-						<td className="whitespace-nowrap px-3 py-3">{pedido.comprador}</td>
+						<td className="whitespace-nowrap px-3 py-3">{pedido.fornecedor}</td>
 						<td className="whitespace-nowrap px-3 py-3">
 							{pedido.data.toString()}
 						</td>

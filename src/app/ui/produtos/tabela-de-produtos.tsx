@@ -1,8 +1,15 @@
-import { buscarProdutosFiltrados } from "@/app/lib/produtos";
-import { Produto } from "@/app/types/Escriva/Produto";
+import { buscarProdutosFiltrados } from "@/app/lib/escriva/produtos";
+import { formatarDateParaString, formatarParaMoeda } from "@/app/lib/utils";
+import { Produto } from "@/app/types/Escriva/Produto/Produto";
 
 export default async function TabelaDeProdutos({ filtro }: { filtro: string }) {
 	const produtos = await buscarProdutosFiltrados(filtro);
+
+	/*
+	produtos.map((produto) => {
+		produto.codigo;
+	});
+	*/
 
 	return (
 		<table className="text-gray-900 md:table">
@@ -21,6 +28,12 @@ export default async function TabelaDeProdutos({ filtro }: { filtro: string }) {
 						Quantidade
 					</th>
 					<th scope="col" className="px-3 py-5 font-medium">
+						Preço de Custo
+					</th>
+					<th scope="col" className="px-3 py-5 font-medium">
+						Preço de Venda
+					</th>
+					<th scope="col" className="px-3 py-5 font-medium">
 						Atualizado em
 					</th>
 				</tr>
@@ -36,7 +49,13 @@ export default async function TabelaDeProdutos({ filtro }: { filtro: string }) {
 						<td className="whitespace-nowrap px-3 py-3">{produto.cor}</td>
 						<td className="whitespace-nowrap px-3 py-3">{produto.estoque}</td>
 						<td className="whitespace-nowrap px-3 py-3">
-							{produto.atualizadoEm?.toString()}
+							{formatarParaMoeda(produto.precoCusto)}
+						</td>
+						<td className="whitespace-nowrap px-3 py-3">
+							{formatarParaMoeda(produto.precoVenda)}
+						</td>
+						<td className="whitespace-nowrap px-3 py-3">
+							{formatarDateParaString(produto.atualizadoEm)}
 						</td>
 					</tr>
 				))}

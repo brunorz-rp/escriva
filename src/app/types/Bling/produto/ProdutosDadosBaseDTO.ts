@@ -4,7 +4,7 @@ export type ProdutosDadosBaseDTO = {
 	id: number;
 	idProdutoPai?: number;
 	nome: string;
-	codigo?: string;
+	codigo: string;
 	precoCusto?: number;
 	estoque?: EstoqueGetAllResponseDTO;
 	tipo: string;

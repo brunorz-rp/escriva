@@ -1,11 +1,10 @@
 import FetchFromBling from "@/app/components/Buttons/fetch-from-bling";
 import FetchFromDB from "@/app/components/Buttons/fetch-from-db";
-import SaveToDB from "@/app/components/Buttons/salvar-no-banco";
 import PedidoDeVendaCard from "@/app/components/Pedido-de-Venda/pedido-de-venda";
 
-import { fetchPedidosDeVenda } from "@/app/services/bling/pedidos/vendas";
 import { PedidoDeVenda as PedidoBling } from "@/app/types/Bling/pedido-de-venda";
 import { PedidoDeVenda } from "@/app/types/Escriva/pedido-de-venda";
+import { fetchPedidosDeVenda } from "../lib/bling/pedidos-de-venda";
 
 export default async function Page() {
 	const pedidosDeVenda = await getPedidosDeVenda();
@@ -35,7 +34,6 @@ export default async function Page() {
 				<div className="flex-1">
 					<FetchFromBling />
 					<FetchFromDB />
-					<SaveToDB />
 				</div>
 			</div>
 			<div>
@@ -67,7 +65,6 @@ export default async function Page() {
 					</div>
 				</div>
 				<div>Data</div>
-				{reservado}
 			</div>
 
 			<div className="rounded-xl">

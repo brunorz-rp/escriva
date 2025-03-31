@@ -1,9 +1,9 @@
-import { obterProdutos } from "@/app/services/bling/produtos/produtos";
+import { obterProdutos } from "@/app/lib/bling/produtos";
 import { ProdutosDadosBaseDTO } from "@/app/types/Bling/produto/ProdutosDadosBaseDTO";
 import {
 	converterProdutosDadosBaseDTO,
 	Produto,
-} from "@/app/types/Escriva/Produto";
+} from "@/app/types/Escriva/Produto/Produto";
 
 export async function obterTodosOsProdutosAtivos() {
 	let pagina = 1;
@@ -27,7 +27,7 @@ export async function obterTodosOsProdutosAtivos() {
 	while (response.data.length > 99) {
 		pagina++;
 
-		await new Promise(f => setTimeout(f, 2000));
+		await new Promise((f) => setTimeout(f, 2000));
 
 		response = await obterProdutos({
 			pagina,
@@ -40,9 +40,12 @@ export async function obterTodosOsProdutosAtivos() {
 		produtosDoBling.push(response.data);
 	}
 
-	const produtos: Array<Produto> = produtosDoBling.flat().map(
-		(produto: ProdutosDadosBaseDTO) => converterProdutosDadosBaseDTO(produto)
-	);
+	const produtos: Array<Produto> = produtosDoBling
+		.flat()
+		.map((produto: ProdutosDadosBaseDTO) =>
+			converterProdutosDadosBaseDTO(produto)
+		);
 
 	return produtos;
 }
+
