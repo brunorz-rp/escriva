@@ -4,10 +4,10 @@ import FetchFromDB from "@/app/components/Buttons/fetch-from-db";
 import PedidoDeCompraCard from "@/app/components/Pedido-de-Compra/pedido-de-compra";
 
 import { PedidoDeCompra } from "@/app/types/Escriva/pedido-de-compra";
-import { obterPedidosDeCompraDoBanco } from "../lib/escriva/pedidos-de-compra";
+import { obterPedidosDeCompraDoBanco, obterPedidosDeCompraDoBling } from "../lib/escriva/pedidos-de-compra";
 
 export default async function Page() {
-	const pedidosDeCompra = await obterPedidosDeCompraDoBanco();
+	const pedidosDeCompra = await obterPedidosDeCompraDoBling();
 
 	return (
 		<div>

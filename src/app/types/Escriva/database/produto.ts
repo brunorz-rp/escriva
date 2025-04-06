@@ -1,11 +1,11 @@
-export type ProdutoTabelaEstoqueDTO = {
+export type ProdutoEntity = {
 	id: number;
+	id_pai: number | null;
+	codigo: string | null;
 	codigo_pai: string | null;
-	codigo: string;
 	cor: string | null;
 	estoque: number | null;
 	preco_custo: number | null;
 	preco_venda: number | null;
-	nome: string;
-	atualizado_em: Date;
+	nome: string | null;
 };

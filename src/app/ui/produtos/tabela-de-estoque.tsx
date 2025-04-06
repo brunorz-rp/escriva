@@ -1,9 +1,8 @@
-import { ProdutosEscriva } from "@/app/lib/escriva/produtos";
-import { formatarDateParaString, formatarParaMoeda } from "@/app/lib/utils";
-
-export default async function TabelaDeProdutos({ filtro }: { filtro: string }) {
-	const produtos = await ProdutosEscriva.getProdutosFiltrados(filtro);
-
+export default async function TabelaDeProdutos({
+	produtos,
+}: {
+	produtos: any[];
+}) {
 	return (
 		<table className="text-gray-900 md:table">
 			<thead className="rounded-lg text-left text-sm font-normal">

@@ -1,9 +1,8 @@
 import { PedidosComprasDTO } from "@/app/types/Bling/pedidos-de-compra";
 import {
 	PedidoDeCompra,
-	transformPedido,
+	converterParaPedidoEscriva,
 } from "@/app/types/Escriva/pedido-de-compra";
-
 import {
 	obterPedidosDeCompra,
 	ParametrosObterPedidosCompras,
@@ -41,7 +40,7 @@ export async function obterPedidosDeCompraDoBling() {
 
 	const pedidos: Array<PedidoDeCompra> = pedidosDoBling
 		.flat()
-		.map((pedido: PedidosComprasDTO) => transformPedido(pedido));
+		.map((pedido: PedidosComprasDTO) => converterParaPedidoEscriva(pedido));
 
 	return pedidos;
 }

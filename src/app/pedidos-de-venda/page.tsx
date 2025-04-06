@@ -1,28 +1,14 @@
+"use client";
+import React from "react";
+
 import FetchFromBling from "@/app/components/Buttons/fetch-from-bling";
 import FetchFromDB from "@/app/components/Buttons/fetch-from-db";
-import PedidoDeVendaCard from "@/app/components/Pedido-de-Venda/pedido-de-venda";
+import { getPedidosComItens } from "../lib/bling/pedidos-de-venda";
 
-import { PedidoDeVenda as PedidoBling } from "@/app/types/Bling/pedido-de-venda";
-import { PedidoDeVenda } from "@/app/types/Escriva/pedido-de-venda";
-import { fetchPedidosDeVenda } from "../lib/bling/pedidos-de-venda";
-
-export default async function Page() {
-	const pedidosDeVenda = await getPedidosDeVenda();
-
-	async function getPedidosDeVenda() {
-		const response = await fetchPedidosDeVenda();
-
-		const pedidosDeVenda: Array<PedidoDeVenda> = response.data.map(
-			(pedido: PedidoBling) => ({
-				id: pedido.id,
-				numero: pedido.numero,
-				data: pedido.data,
-				contato: pedido.contato.id,
-				situacao: pedido.situacao.valor,
-			})
-		);
-
-		return pedidosDeVenda;
+export default function SellOrders() {
+	async function fetchFromBling() {
+		const newData = await getPedidosComItens({});
+		console.log(newData);
 	}
 
 	return (
@@ -32,6 +18,7 @@ export default async function Page() {
 					<h1 className="flex mb-4 text-xl md:text-2xl">Pedidos de Venda</h1>
 				</div>
 				<div className="flex-1">
+					<button onClick={fetchFromBling}>Blingar</button>
 					<FetchFromBling />
 					<FetchFromDB />
 				</div>
@@ -65,14 +52,6 @@ export default async function Page() {
 					</div>
 				</div>
 				<div>Data</div>
-			</div>
-
-			<div className="rounded-xl">
-				{pedidosDeVenda.map((pedidoDeVenda: PedidoDeVenda, index: number) => (
-					<div key={index} className="p-1">
-						<PedidoDeVendaCard pedido={pedidoDeVenda} />
-					</div>
-				))}
 			</div>
 		</div>
 	);

@@ -1,3 +1,5 @@
+import { Produto } from "@/app/types/Escriva/produto";
+
 export type ParametrosObterProdutos = {
 	pagina?: number;
 	limite?: number;
@@ -15,60 +17,85 @@ export type ParametrosObterProdutos = {
 	codigos?: number[];
 };
 
-export async function obterProdutos(
-	parametrosObterProdutos: ParametrosObterProdutos
-) {
-	try {
-		const parametros = Object.entries(parametrosObterProdutos)
-			.map(([key, value]) => `${key}=${value}`)
-			.join("&");
+const ProdutosBling = {
+	getProdutos: async (
+		parametros: ParametrosObterProdutos | undefined
+	): Promise<Produto[]> => {
+		parametros ??= {};
+		parametros.pagina = 1;
+		parametros.limite = 100;
+		parametros.criterio = 2; // 2 - Ativos
+		parametros.tipo = "V"; // V - Variação
+		parametros.idCategoria = 10845310; // ID da categoria "Perfil de Alumínio"
 
-		const url = `${process.env.BLING_URL}/produtos?${parametros}`;
+		try {
+			let response = await BlingAPI.getProdutos(parametros);
 
-		const response = await fetch(url, {
-			method: "GET",
-			headers: {
-				Accept: "application/json",
-				Authorization: `Bearer ${process.env.BLING_ACCESS_CODE}`,
-			},
-		});
+			const produtos = [];
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+			produtos.push(response.data);
+
+			while (response.data.length > 99) {
+				parametros.pagina++;
+
+				await new Promise((f) => setTimeout(f, 2000));
+
+				response = await BlingAPI.getProdutos(parametros);
+
+				produtos.push(response.data);
+			}
+
+			return produtos.flat().map((produto: any) => ({
+				id: produto.id,
+				idPai: produto.idPai,
+				codigo: produto.codigo,
+				codigoPai: produto.codigo_pai,
+				cor: produto.cor,
+				quantidade: produto.estoque,
+				precoCusto: produto.preco_custo,
+				precoVenda: produto.preco_venda,
+				nome: produto.nome,
+				atualizadoEm: produto.atualizado_em,
+			}));
+		} catch (error) {
+			console.log(error);
+			throw error;
 		}
+	},
+};
 
-		// Parse the JSON data
-		const json = await response.json();
+const BlingAPI = {
+	/*	
+		https://developer.bling.com.br/referencia#/Produtos/get_produtos
+	*/
+	getProdutos: async (parametrosObterProdutos: ParametrosObterProdutos) => {
+		try {
+			const parametros = Object.entries(parametrosObterProdutos)
+				.map(([key, value]) => `${key}=${value}`)
+				.join("&");
 
-		return json;
-	} catch (error) {
-		console.error("Error fetching user data:", error);
-		throw error;
-	}
-}
+			const url = `${process.env.BLING_URL}/produtos?${parametros}`;
 
-export async function buscarSaldos() {
-	try {
-		const response = await fetch(`${process.env.BLING_URL}"/estoques/saldos"`, {
-			method: "GET",
-			headers: {
-				Accept: "application/json",
-				Authorization: `Bearer ${process.env.BLING_ACCESS_CODE}`,
-			},
-		});
+			const response = await fetch(url, {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					Authorization: `Bearer ${process.env.BLING_ACCESS_CODE}`,
+				},
+			});
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const json = await response.json();
+
+			return json;
+		} catch (error) {
+			console.error(error);
+			throw error;
 		}
+	},
+};
 
-		// Parse the JSON data
-		const json = await response.json();
-
-		return json;
-	} catch (error) {
-		console.error("Error fetching user data:", error);
-		throw error;
-	}
-
-	return false;
-}
+export { ProdutosBling };

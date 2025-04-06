@@ -2,7 +2,9 @@ import FetchFromBling from "@/app/components/Buttons/fetch-from-bling";
 import FetchFromDB from "@/app/components/Buttons/fetch-from-db";
 
 import Search from "../ui/search";
-import TabelaDeProdutos from "../ui/produtos/tabela-de-produtos";
+import { ProdutosEscriva } from "../lib/escriva/produtos";
+import { agruparCoresPorCodigoPai } from "../lib/utils";
+import TabelaDeProdutosPorCodigoPai from "../ui/produtos/tabela-de-produtos-por-codigo-pai";
 
 export default async function Page(props: {
 	searchParams?: Promise<{
@@ -11,6 +13,14 @@ export default async function Page(props: {
 }) {
 	const searchParams = await props.searchParams;
 	const filtro = searchParams?.filtro || "";
+
+	const produtos = await ProdutosEscriva.getProdutosFiltrados(filtro);
+	const produtosAgrupadosPorCodigoPai = agruparCoresPorCodigoPai(produtos);
+
+	/* const salvarTd = async () => {
+		const produtosDoBling = await ProdutosBling.getProdutos(undefined);
+		inserirProdutos(produtosDoBling);
+	};*/
 
 	return (
 		<div className="w-full">
@@ -24,7 +34,12 @@ export default async function Page(props: {
 				<Search placeholder="Procurar produtos..." />
 			</div>
 			<div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-				<TabelaDeProdutos filtro={filtro} />
+				<TabelaDeProdutosPorCodigoPai
+					produtos={produtosAgrupadosPorCodigoPai}
+				/>
+				<TabelaDeProdutosPorCodigoPai
+					produtos={produtosAgrupadosPorCodigoPai}
+				/>
 			</div>
 		</div>
 	);

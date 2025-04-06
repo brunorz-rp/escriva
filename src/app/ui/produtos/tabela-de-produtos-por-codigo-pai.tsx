@@ -1,9 +1,8 @@
-import { ProdutosEscriva } from "@/app/lib/escriva/produtos";
-import { formatarDateParaString, formatarParaMoeda } from "@/app/lib/utils";
-
-export default async function TabelaDeProdutos({ filtro }: { filtro: string }) {
-	const produtos = await ProdutosEscriva.getProdutosFiltrados(filtro);
-
+export default async function TabelaDeProdutosPorCodigoPai({
+	produtos,
+}: {
+	produtos: any[];
+}) {
 	return (
 		<table className="text-gray-900 md:table">
 			<thead className="rounded-lg text-left text-sm font-normal">
@@ -12,43 +11,49 @@ export default async function TabelaDeProdutos({ filtro }: { filtro: string }) {
 						#
 					</th>
 					<th scope="col" className="px-3 py-5 font-medium">
-						Código
+						Item
 					</th>
 					<th scope="col" className="px-3 py-5 font-medium">
-						Cor
+						Branco
 					</th>
 					<th scope="col" className="px-3 py-5 font-medium">
-						Quantidade
+						Preto
 					</th>
 					<th scope="col" className="px-3 py-5 font-medium">
-						Preço de Custo
+						Natural
 					</th>
 					<th scope="col" className="px-3 py-5 font-medium">
-						Preço de Venda
+						Amadeirado
 					</th>
 					<th scope="col" className="px-3 py-5 font-medium">
-						Atualizado em
+						Anodizado
 					</th>
 				</tr>
 			</thead>
 			<tbody className="bg-white">
 				{produtos?.map((produto, index: number) => (
 					<tr
-						key={produto.id}
+						key={produto.codigoPai}
 						className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
 					>
-						<td className="whitespace-nowrap px-3 py-3">{index + 1}</td>
-						<td className="whitespace-nowrap px-3 py-3">{produto.codigo}</td>
-						<td className="whitespace-nowrap px-3 py-3">{produto.cor}</td>
-						<td className="whitespace-nowrap px-3 py-3">{produto.estoque}</td>
+						<td className="whitespace-nowrap px-3 py-3 font-extralight">
+							{index + 1}
+						</td>
+						<td className="whitespace-nowrap px-3 py-3">{produto.codigoPai}</td>
 						<td className="whitespace-nowrap px-3 py-3">
-							{formatarParaMoeda(produto.precoCusto)}
+							{produto.cores.branco}
 						</td>
 						<td className="whitespace-nowrap px-3 py-3">
-							{formatarParaMoeda(produto.precoVenda)}
+							{produto.cores.preto}
 						</td>
 						<td className="whitespace-nowrap px-3 py-3">
-							{formatarDateParaString(produto.atualizadoEm)}
+							{produto.cores.natural}
+						</td>
+						<td className="whitespace-nowrap px-3 py-3">
+							{produto.amadeirado}
+						</td>
+						<td className="whitespace-nowrap px-3 py-3">
+							{produto.cores.anodizado}
 						</td>
 					</tr>
 				))}
