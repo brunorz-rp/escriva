@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ProductRecords, ProdutoPai } from "../types/Escriva/produto-pai";
-import BuyOrdersFilteredSearch from "../components/Filters/buy-orders-fitered-search";
-import ProductsFilteredSearch from "../components/Filters/products-fitered-search";
-import SellOrdersFilteredSearch from "../components/Filters/sell-orders-fitered-search";
-import ProductQuantityPerColorRow from "../components/product-quantity-per-color-panel/row";
+import { ProductRecords, ProdutoPai } from "@/app/types/Escriva/produto-pai";
+import BuyOrdersFilteredSearch from "../Filters/buy-orders-fitered-search";
+import ProductsFilteredSearch from "../Filters/products-fitered-search";
+import SellOrdersFilteredSearch from "../Filters/sell-orders-fitered-search";
+import ProductQuantityPerColorRow from "./column";
 
 export default function Analyze() {
 	const [stock, setStock] = useState<ProductRecords>({});
@@ -67,9 +67,7 @@ export default function Analyze() {
 
 	return (
 		<div className="flex m-3 text-center">
-			<table
-				className="border-separate border-bg-blue-150"
-			>
+			<table className="border-separate bg-blue-50">
 				<thead>
 					<tr>
 						<th className="bg-blue-950"></th>

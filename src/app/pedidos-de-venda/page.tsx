@@ -1,14 +1,21 @@
 "use client";
-import React from "react";
 
-import FetchFromBling from "@/app/components/Buttons/fetch-from-bling";
-import FetchFromDB from "@/app/components/Buttons/fetch-from-db";
-import { getPedidosComItens } from "../lib/bling/pedidos-de-venda";
+import { useState } from "react";
 
 export default function SellOrders() {
-	async function fetchFromBling() {
-		const newData = await getPedidosComItens({});
-		console.log(newData);
+	const [checkboxValues, setCheckboxValues] = useState({
+		emAberto: false,
+		atendido: false,
+		atendido2: false,
+		emAndamento: true,
+		emAndamento2: true,
+		reservado: true,
+	});
+
+	// Update checkbox state
+	function handleCheckboxChange(event: React.ChangeEvent<HTMLInputElement>) {
+		const { name, checked } = event.target;
+		setCheckboxValues((prev) => ({ ...prev, [name]: checked }));
 	}
 
 	return (
@@ -17,41 +24,66 @@ export default function SellOrders() {
 				<div className="flex-1">
 					<h1 className="flex mb-4 text-xl md:text-2xl">Pedidos de Venda</h1>
 				</div>
-				<div className="flex-1">
-					<button onClick={fetchFromBling}>Blingar</button>
-					<FetchFromBling />
-					<FetchFromDB />
-				</div>
 			</div>
 			<div>
 				<div> Situações</div>
 				<div>
 					<div className="flex">
+						<input
+							type="checkbox"
+							name="emAberto"
+							checked={checkboxValues.emAberto}
+							onChange={handleCheckboxChange}
+						/>
 						<p>Em aberto</p>
-						<input type="checkbox" name="emAberto" />
 					</div>
 					<div className="flex">
+						<input
+							type="checkbox"
+							name="atendido"
+							checked={checkboxValues.atendido}
+							onChange={handleCheckboxChange}
+						/>
 						<p>Atendido</p>
-						<input type="checkbox" name="atendido" />
 					</div>
 					<div className="flex">
+						<input
+							type="checkbox"
+							name="atendido2"
+							checked={checkboxValues.atendido2}
+							onChange={handleCheckboxChange}
+						/>
 						<p>Atendido 2</p>
-						<input type="checkbox" name="atendido2" />
 					</div>
 					<div className="flex">
+						<input
+							type="checkbox"
+							name="emAndamento"
+							checked={checkboxValues.emAndamento}
+							onChange={handleCheckboxChange}
+						/>
 						<p>Em andamento</p>
-						<input type="checkbox" name="emAndamento" />
 					</div>
 					<div className="flex">
+						<input
+							type="checkbox"
+							name="emAndamento2"
+							checked={checkboxValues.emAndamento2}
+							onChange={handleCheckboxChange}
+						/>
 						<p>Em andamento 2</p>
-						<input type="checkbox" name="emAndamento2" />
 					</div>
 					<div className="flex">
+						<input
+							id="reservado"
+							type="checkbox"
+							name="reservado"
+							checked={checkboxValues.reservado}
+							onChange={handleCheckboxChange}
+						/>
 						<p>Reservado</p>
-						<input id="reservado" type="checkbox" />
 					</div>
 				</div>
-				<div>Data</div>
 			</div>
 		</div>
 	);

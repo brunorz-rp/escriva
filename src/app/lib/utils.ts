@@ -1,5 +1,5 @@
+import { ProductRecords } from "@/app/types/Escriva/produto-pai";
 import { Produto } from "../types/Escriva/produto";
-import { ProdutoPai } from "../types/Escriva/produto-pai";
 
 export const interpretarCor = (cor: string) => {
 	switch (cor) {
@@ -36,7 +36,7 @@ export const formatarDateParaString = (data: Date, local: string = "pt-BR") => {
 	return formatter.format(data);
 };
 
-export function agruparVariacoesPorCor(produtos: Produto[]): ProdutoPai[] {
+export function agruparVariacoesPorCor(produtos: Produto[]): ProductRecords {
 	const variacoes: Record<string, Record<string, Produto>> = {};
 
 	for (const produto of produtos) {
@@ -46,26 +46,14 @@ export function agruparVariacoesPorCor(produtos: Produto[]): ProdutoPai[] {
 
 			if (!variacoes[codigoPai]) {
 				variacoes[codigoPai] = {};
+				variacoes[codigoPai][cor] = produto;
+			} else {
+				if (variacoes[codigoPai][cor].quantidade && produto.quantidade) {
+					variacoes[codigoPai][cor].quantidade += produto.quantidade;
+				}
 			}
-
-			variacoes[codigoPai][cor] = produto;
 		}
 	}
 
-	const produtosPai: ProdutoPai[] = [];
-
-	Object.entries(variacoes).forEach(([codigoPai, produto]) => {
-		const produtoPai: ProdutoPai = {
-			codigo: codigoPai,
-			branco: produto.branco,
-			preto: produto.preto,
-			natural: produto.natural,
-			amadeirado: produto.amadeirado,
-			anodizado: produto.anodizado,
-		};
-
-		produtosPai.push(produtoPai);
-	});
-
-	return produtosPai;
+	return variacoes;
 }

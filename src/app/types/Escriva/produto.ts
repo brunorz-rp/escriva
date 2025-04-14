@@ -1,6 +1,7 @@
 import { VendasItemDTO } from "../Bling/pedido-de-venda";
+import { PedidosComprasItemDTO } from "../Bling/pedidos-de-compra";
 import { ProdutosDadosBaseDTO } from "../Bling/produto/ProdutosDadosBaseDTO";
-import { ProdutoEntity } from "./database/produto";
+import { ProdutoEntity } from "./database/produto-entity";
 
 export type Produto = {
 	id: number;
@@ -36,7 +37,6 @@ export function converterProdutosDadosBaseDTO(
 	const codigos = dto.codigo.split("-");
 	const codigoCor = codigos.pop();
 	const codigoPai = codigos.join("-");
-	const atualizadoEm = new Date();
 
 	return {
 		id: dto.id,
@@ -50,7 +50,6 @@ export function converterProdutosDadosBaseDTO(
 			? dto.estoque?.saldoVirtualTotal
 			: null,
 		nome: dto.nome,
-		atualizadoEm,
 	};
 }
 
@@ -58,7 +57,6 @@ export function converterProdutosDadosDTO(dto: ProdutosDadosBaseDTO): Produto {
 	const codigos = dto.codigo.split("-");
 	const codigoCor = codigos.pop();
 	const codigoPai = codigos.join("-");
-	const atualizadoEm = new Date();
 
 	return {
 		id: dto.id,
@@ -72,7 +70,24 @@ export function converterProdutosDadosDTO(dto: ProdutosDadosBaseDTO): Produto {
 			? dto.estoque?.saldoVirtualTotal
 			: null,
 		nome: dto.nome,
-		atualizadoEm,
+	};
+}
+
+export function converterComprasItemDTO(dto: PedidosComprasItemDTO): Produto {
+	const codigos = dto.produto.codigo?.split("-");
+	const codigoCor = codigos?.pop();
+	const codigoPai = codigos?.join("-");
+
+	return {
+		id: dto.produto.id,
+		idPai: null,
+		codigo: dto.produto.codigo ? dto.produto.codigo : null,
+		codigoPai: codigoPai ? codigoPai : null,
+		cor: codigoCor ? codigoCor : null,
+		precoCusto: dto.valor,
+		precoVenda: null,
+		quantidade: dto.quantidade,
+		nome: null,
 	};
 }
 
@@ -90,5 +105,6 @@ export function converterVendasItemDTO(dto: VendasItemDTO): Produto {
 		precoCusto: null,
 		precoVenda: dto.valor,
 		quantidade: dto.quantidade,
+		nome: null,
 	};
 }

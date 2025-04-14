@@ -9,7 +9,7 @@ export type PedidosComprasDTO = {
 	situacao: PedidosComprasSituacaoDTO;
 };
 
-export type PedidosComprasPorIdDTO = {
+export type PedidoCompraDTO = {
 	id: number;
 	numero: number;
 	data: Date;
@@ -59,7 +59,7 @@ type PedidosComprasTransporteDTO = {
 	volumes: number;
 };
 
-type PedidosComprasItemDTO = {
+export type PedidosComprasItemDTO = {
 	descricao: string;
 	codigoFornecedor: string;
 	unidade: string;

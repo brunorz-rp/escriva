@@ -8,3 +8,7 @@ export type ProdutoPai = {
 	anodizado: Produto | undefined;
 	amadeirado: Produto | undefined;
 };
+
+export type ProductRecord = Record<string, Produto>;
+
+export type ProductRecords = Record<string, ProductRecord>;

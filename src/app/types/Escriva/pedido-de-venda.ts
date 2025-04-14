@@ -1,13 +1,13 @@
 import { PedidosVendasDTO, PedidoVendaDTO } from "../Bling/pedido-de-venda";
-import { converterVendasItemDTO, Produto } from "./produto";
+import { Produto, converterVendasItemDTO } from "./produto";
 
 export type PedidoDeVenda = {
 	id: number;
 	numero: number;
 	data: Date;
-	comprador?: string;
+	contato?: string;
 	situacao: number;
-	itens?: Produto[];
+	itens: Produto[];
 };
 
 export const converterPedidosVendasDTO = (
@@ -16,8 +16,8 @@ export const converterPedidosVendasDTO = (
 	id: dto.id,
 	numero: dto.numero,
 	data: dto.data,
-	comprador: dto.contato?.nome,
-	situacao: dto.situacao.valor,
+	contato: dto.contato?.nome,
+	situacao: dto.situacao.id,
 	itens: [],
 });
 
@@ -27,7 +27,7 @@ export const converterPedidoVendaDTO = (
 	id: dto.id,
 	numero: dto.numero,
 	data: dto.data,
-	comprador: dto.contato?.nome,
-	situacao: dto.situacao.valor,
-	itens: dto.itens.map((vendaItemDTO) => converterVendasItemDTO(vendaItemDTO)),
+	contato: dto.contato?.nome,
+	situacao: dto.situacao.id,
+	itens: dto.itens.map((item) => converterVendasItemDTO(item)),
 });
