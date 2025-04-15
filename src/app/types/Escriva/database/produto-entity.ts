@@ -7,6 +7,7 @@ export type ProdutoEntity = {
 	codigo_pai: string | null;
 	cor: string | null;
 	estoque: number | null;
+	peso: number | null;
 	preco_custo: number | null;
 	preco_venda: number | null;
 	nome: string | null;
@@ -20,6 +21,7 @@ export function converterProduto(produto: Produto): ProdutoEntity {
 		codigo_pai: produto.codigoPai,
 		cor: produto.cor,
 		estoque: produto.quantidade,
+		peso: produto.peso,
 		preco_custo: produto.precoCusto,
 		preco_venda: produto.precoVenda,
 		nome: produto.nome,

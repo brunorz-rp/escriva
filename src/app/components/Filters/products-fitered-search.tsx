@@ -2,7 +2,7 @@
 
 import { agruparVariacoesPorCor } from "@/app/lib/utils";
 import { ProductRecords } from "@/app/types/Escriva/produto-pai";
-import { getProducts } from "@/app/lib/escriva/produtos";
+import { getProducts } from "@/app/lib/produtos";
 import { useEffect } from "react";
 import TextFilter from "./text-filter";
 

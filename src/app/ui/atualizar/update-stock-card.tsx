@@ -1,13 +1,13 @@
 "use client";
 
-import {
-	fetchProductsFromBling,
-	ParametrosObterProdutos,
-} from "@/app/lib/produtos";
 import { Produto } from "@/app/types/Escriva/produto";
 import { useState } from "react";
 import LoadingDots from "./loading";
-import { upsertProducts } from "@/app/lib/escriva/produtos";
+import {
+	ParametrosObterProdutos,
+	fetchProductsFromBling,
+	upsertProducts,
+} from "@/app/lib/produtos";
 
 export default function UpdateStockCard({
 	isSomeoneUpdating,

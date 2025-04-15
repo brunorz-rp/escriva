@@ -2,17 +2,14 @@
 
 import postgres from "postgres";
 
-import {
-	PedidosVendasDTO,
-	PedidoVendaDTO,
-} from "@/app/types/Bling/pedido-de-venda";
+import { PedidosVendasDTO } from "@/app/types/Bling/pedido-de-venda";
 import {
 	PedidoDeVenda,
 	converterPedidosVendasDTO,
 	converterPedidoVendaDTO,
 } from "@/app/types/Escriva/pedido-de-venda";
 
-const BATCH_SIZE = 1000; // Adjust based on your DB performance
+const BATCH_SIZE = 1000;
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -99,11 +96,9 @@ export async function fetchSellOrdersFromBling(
 	}
 }
 
-export async function fetchSellOrderWithItensFromBling(
-	idPedidoVenda: number
-): Promise<PedidoDeVenda> {
+export async function fetchSellOrderWithItensFromBling(idPedidoVenda: number) {
 	try {
-		const data = await BlingAPI.getPedidosVendasID(idPedidoVenda);
+		const { data } = await BlingAPI.getPedidosVendasID(idPedidoVenda);
 
 		return converterPedidoVendaDTO(data);
 	} catch (error) {
@@ -159,7 +154,7 @@ const BlingAPI = {
 	/*	
 		https://developer.bling.com.br/referencia#/Pedidos%20-%20Vendas/get_pedidos_vendas__idPedidoVenda_
 	*/
-	getPedidosVendasID: async (id: number): Promise<PedidoVendaDTO> => {
+	getPedidosVendasID: async (id: number) => {
 		try {
 			const url = `${process.env.BLING_URL}/pedidos/vendas/${id}`;
 

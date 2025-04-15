@@ -1,3 +1,5 @@
+import { PedidosComprasFornecedorDTO } from "./fornecedor";
+
 export type PedidosComprasDTO = {
 	id: number;
 	numero: number;
@@ -27,10 +29,6 @@ export type PedidoCompraDTO = {
 	transporte: PedidosComprasTransporteDTO;
 	itens: Array<PedidosComprasItemDTO>;
 	parcelas: Array<PedidosComprasParcelaDTO>;
-};
-
-type PedidosComprasFornecedorDTO = {
-	id: number;
 };
 
 type PedidosComprasSituacaoDTO = {

@@ -22,7 +22,7 @@ export default function UpdateSellOrdersCard({
 
 	const parametros = {
 		pagina: 1,
-		limite: 100
+		limite: 100,
 		// idsSituacoes: [6, 452950, 452952],
 	};
 

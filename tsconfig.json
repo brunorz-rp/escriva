@@ -28,6 +28,6 @@
 		"**/*.tsx",
 		".next/types/**/*.ts",
 		"src/app/lib/sheets/authorization.ts"
-	],
+, "src/app/julio/parser.js"	],
 	"exclude": ["node_modules"]
 }

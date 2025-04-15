@@ -1,6 +1,6 @@
 import { VendasItemDTO } from "../Bling/pedido-de-venda";
 import { PedidosComprasItemDTO } from "../Bling/pedidos-de-compra";
-import { ProdutosDadosBaseDTO } from "../Bling/produto/ProdutosDadosBaseDTO";
+import { ProdutosDadosBaseDTO, ProdutosDadosDTO } from "../Bling/produtos";
 import { ProdutoEntity } from "./database/produto-entity";
 
 export type Produto = {
@@ -10,6 +10,7 @@ export type Produto = {
 	codigoPai: string | null;
 	cor: string | null;
 	quantidade: number | null;
+	peso: number | null;
 	precoCusto: number | null;
 	precoVenda: number | null;
 	nome: string | null;
@@ -22,6 +23,7 @@ export function converterProdutoEntity(entity: ProdutoEntity): Produto {
 		codigo: entity.codigo,
 		codigoPai: entity.codigo_pai,
 		cor: entity.cor,
+		peso: entity.peso,
 		precoCusto: entity.preco_custo,
 		precoVenda: entity.preco_venda,
 		quantidade: entity.estoque,
@@ -44,8 +46,9 @@ export function converterProdutosDadosBaseDTO(
 		codigo: dto.codigo,
 		codigoPai: codigoPai ? codigoPai : null,
 		cor: codigoCor ? codigoCor : null,
+		peso: null,
 		precoCusto: dto.precoCusto ? dto.precoCusto : null,
-		precoVenda: null,
+		precoVenda: dto.preco ? dto.preco : null,
 		quantidade: dto.estoque?.saldoVirtualTotal
 			? dto.estoque?.saldoVirtualTotal
 			: null,
@@ -53,23 +56,24 @@ export function converterProdutosDadosBaseDTO(
 	};
 }
 
-export function converterProdutosDadosDTO(dto: ProdutosDadosBaseDTO): Produto {
-	const codigos = dto.codigo.split("-");
-	const codigoCor = codigos.pop();
-	const codigoPai = codigos.join("-");
+export function converterProdutosDadosDTO(dto: ProdutosDadosDTO): Produto {
+	const codigos = dto.codigo?.split("-");
+	const codigoCor = codigos?.pop();
+	const codigoPai = codigos?.join("-");
 
 	return {
 		id: dto.id,
-		idPai: dto.idProdutoPai ? dto.idProdutoPai : null,
-		codigo: dto.codigo,
+		idPai: null,
+		codigo: dto.codigo ? dto.codigo : null,
 		codigoPai: codigoPai ? codigoPai : null,
 		cor: codigoCor ? codigoCor : null,
-		precoCusto: dto.precoCusto ? dto.precoCusto : null,
-		precoVenda: null,
+		peso: dto.pesoLiquido ? dto.pesoLiquido : null,
+		precoCusto: null,
+		precoVenda: dto.preco ? dto.preco : null,
 		quantidade: dto.estoque?.saldoVirtualTotal
 			? dto.estoque?.saldoVirtualTotal
 			: null,
-		nome: dto.nome,
+		nome: dto.nome ? dto.nome : null,
 	};
 }
 
@@ -84,6 +88,7 @@ export function converterComprasItemDTO(dto: PedidosComprasItemDTO): Produto {
 		codigo: dto.produto.codigo ? dto.produto.codigo : null,
 		codigoPai: codigoPai ? codigoPai : null,
 		cor: codigoCor ? codigoCor : null,
+		peso: null,
 		precoCusto: dto.valor,
 		precoVenda: null,
 		quantidade: dto.quantidade,
@@ -102,6 +107,7 @@ export function converterVendasItemDTO(dto: VendasItemDTO): Produto {
 		codigo: dto.codigo ? dto.codigo : null,
 		codigoPai: codigoPai ? codigoPai : null,
 		cor: codigoCor ? codigoCor : null,
+		peso: null,
 		precoCusto: null,
 		precoVenda: dto.valor,
 		quantidade: dto.quantidade,

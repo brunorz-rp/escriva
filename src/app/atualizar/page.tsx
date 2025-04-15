@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import UpdateBuyOrdersCard from "../ui/atualizar/update-buy-orders-card";
-import UpdateSellOrdersCard from "../ui/atualizar/update-sell-orders-card";
 import UpdateStockCard from "../ui/atualizar/update-stock-card";
+import UpdateDetailedStockCard from "../ui/atualizar/update-detailed-stock-card";
+import UpdateSellOrdersCard from "../ui/atualizar/update-sell-orders-card";
+import UpdateBuyOrdersCard from "../ui/atualizar/update-buy-orders-card";
+
 
 export default function Atualizações() {
 	const [isSomeoneUpdating, setSomeoneUpdating] = useState(false);
@@ -17,6 +19,13 @@ export default function Atualizações() {
 			<div className="h-dvh flex flex-col justify-center">
 				<div className="min-h-52 p-12">
 					<UpdateStockCard
+						isSomeoneUpdating={isSomeoneUpdating}
+						setSomeoneUpdating={setSomeoneUpdating}
+					/>
+				</div>
+
+				<div className="min-h-52 p-12">
+					<UpdateDetailedStockCard
 						isSomeoneUpdating={isSomeoneUpdating}
 						setSomeoneUpdating={setSomeoneUpdating}
 					/>

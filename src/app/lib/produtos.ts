@@ -1,10 +1,146 @@
 "use server";
 
-import { ProdutosDadosBaseDTO } from "@/app/types/Bling/produto/ProdutosDadosBaseDTO";
+import postgres from "postgres";
 import {
-	converterProdutosDadosBaseDTO,
+	ProdutosDadosBaseDTO,
+	ProdutosDadosDTO,
+} from "../types/Bling/produtos";
+import {
+	ProdutoEntity,
+	converterProduto,
+} from "../types/Escriva/database/produto-entity";
+import {
 	Produto,
-} from "@/app/types/Escriva/produto";
+	converterProdutoEntity,
+	converterProdutosDadosBaseDTO,
+	converterProdutosDadosDTO,
+} from "../types/Escriva/produto";
+
+const BATCH_SIZE = 1000; // Adjust based on your DB performance
+
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+
+export async function insertProduct(produto: Produto) {
+	try {
+		await sql`
+			INSERT INTO produtos (
+				id, id_pai,
+				codigo, codigo_pai,
+				cor, estoque,
+				preco_custo, preco_venda,
+				nome
+			)
+			VALUES (
+				${produto.id}, ${produto?.idPai},
+				${produto.codigo}, ${produto?.codigoPai},
+				${produto?.cor}, ${produto?.quantidade},
+				${produto?.precoCusto}, ${produto?.precoVenda},
+				${produto?.nome}
+			)
+			ON CONFLICT
+				(id)
+			DO UPDATE SET
+				id_pai = EXCLUDED.id_pai,
+				codigo = EXCLUDED.codigo,
+				codigo_pai = EXCLUDED.codigo_pai,
+				cor = EXCLUDED.cor,
+				estoque = EXCLUDED.estoque,
+				preco_custo = EXCLUDED.preco_custo,
+				preco_venda = EXCLUDED.preco_venda,
+				nome = EXCLUDED.nome
+			`;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export async function getProducts(filter?: string): Promise<Produto[]> {
+	try {
+		let produtos = undefined;
+
+		if (!filter) {
+			produtos = await sql<
+				ProdutoEntity[]
+			>`SELECT * FROM produtos ORDER BY produtos.codigo ASC`;
+		} else {
+			produtos = await sql<[]>`	
+			SELECT * FROM produtos
+			WHERE
+			  produtos.codigo ILIKE ${`%${filter}%`} OR
+			  produtos.codigo_pai ILIKE ${`%${filter}%`} OR
+			  produtos.nome ILIKE ${`%${filter}%`}
+			ORDER BY
+			  produtos.codigo ASC
+		  `;
+		}
+
+		return produtos.map((entity: ProdutoEntity) =>
+			converterProdutoEntity(entity)
+		);
+	} catch (error) {
+		throw error;
+	}
+}
+
+export async function upsertProduct(produto: Produto) {
+	try {
+		const values = converterProduto(produto);
+
+		await sql`
+			INSERT INTO produtos
+				${sql(values)}
+			ON CONFLICT
+				(id)
+			DO UPDATE SET
+				id_pai = EXCLUDED.id_pai,
+				codigo = EXCLUDED.codigo,
+				codigo_pai = EXCLUDED.codigo_pai,
+				cor = EXCLUDED.cor,
+				estoque = EXCLUDED.estoque,
+				peso = EXCLUDED.peso,
+				preco_custo = EXCLUDED.preco_custo,
+				preco_venda = EXCLUDED.preco_venda,
+				nome = EXCLUDED.nome
+		`;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export async function upsertProducts(produtos: Produto[]) {
+	try {
+		for (let index = 0; index < produtos.length; index += BATCH_SIZE) {
+			const batch = produtos.slice(index, index + BATCH_SIZE);
+
+			await sql.begin(async (sql) => {
+				const values = batch.map((produto) => converterProduto(produto));
+
+				await sql`
+					INSERT INTO produtos
+						${sql(values)}
+					ON CONFLICT
+						(id)
+					DO UPDATE SET
+						id_pai = EXCLUDED.id_pai,
+						codigo = EXCLUDED.codigo,
+						codigo_pai = EXCLUDED.codigo_pai,
+						cor = EXCLUDED.cor,
+						estoque = EXCLUDED.estoque,
+						peso = EXCLUDED.peso,
+						preco_custo = EXCLUDED.preco_custo,
+						preco_venda = EXCLUDED.preco_venda,
+						nome = EXCLUDED.nome
+				`;
+			});
+		}
+	} catch (error) {
+		throw error;
+	}
+}
+
+/*	*	*	*	*	*	*	*	*	*	*	*	*	*	*
+ *	V		Métodos que interagem com o Bling	V		*
+ *	*	*	*	*	*	*	*	*	*	*	*	*	*	*/
 
 export type ParametrosObterProdutos = {
 	pagina: number;
@@ -29,9 +165,9 @@ export async function fetchProductsFromBling(
 	try {
 		await new Promise((resolve) => setTimeout(resolve, 2000));
 
-		const { data } = await BlingAPI.getProdutos(parameters);
+		const produtos = await BlingAPI.getProdutos(parameters);
 
-		return data.map((produtoDadosBaseDTO: ProdutosDadosBaseDTO) =>
+		return produtos.map((produtoDadosBaseDTO: ProdutosDadosBaseDTO) =>
 			converterProdutosDadosBaseDTO(produtoDadosBaseDTO)
 		);
 	} catch (error) {
@@ -39,34 +175,33 @@ export async function fetchProductsFromBling(
 	}
 }
 
-export async function fetchAllProductsFromBling(
-	parameters: ParametrosObterProdutos
-): Promise<Produto[]> {
+export async function fetchProductFromBling(id: number): Promise<Produto> {
 	try {
-		await new Promise((resolve) => setTimeout(resolve, 2000));
+		const produto = await BlingAPI.getProdutosByID(id);
 
-		parameters.pagina = 0;
-		const { data } = await BlingAPI.getProdutos(parameters);
-
-		const products = [];
-
-		products.push(data);
-
-		while (data.length > 99) {
-			await new Promise((resolve) => setTimeout(resolve, 2000));
-
-			parameters.pagina++;
-			const { data } = await BlingAPI.getProdutos(parameters);
-
-			products.push(data);
-		}
-
-		return products.map((produtoDadosBaseDTO: ProdutosDadosBaseDTO) =>
-			converterProdutosDadosBaseDTO(produtoDadosBaseDTO)
-		);
+		return converterProdutosDadosDTO(produto);
 	} catch (error) {
-		console.log(error);
 		throw error;
+	} finally {
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+	}
+}
+
+export type ParametrosAlterarProduto = {
+	idProduto: number;
+	produtosDadosDTO: ProdutosDadosDTO;
+};
+
+export async function updateProductFromBling(produto: ProdutosDadosDTO) {
+	try {
+		await BlingAPI.updateProduto({
+			idProduto: produto.id,
+			produtosDadosDTO: produto,
+		});
+	} catch (error) {
+		throw error;
+	} finally {
+		await new Promise((resolve) => setTimeout(resolve, 3000));
 	}
 }
 
@@ -74,7 +209,9 @@ const BlingAPI = {
 	/*	
 		https://developer.bling.com.br/referencia#/Produtos/get_produtos
 	*/
-	getProdutos: async (parametrosObterProdutos: ParametrosObterProdutos) => {
+	getProdutos: async (
+		parametrosObterProdutos: ParametrosObterProdutos
+	): Promise<ProdutosDadosBaseDTO[]> => {
 		try {
 			const parametros = Object.entries(parametrosObterProdutos)
 				.map(([key, value]) => `${key}=${value}`)
@@ -84,6 +221,64 @@ const BlingAPI = {
 
 			const response = await fetch(url, {
 				method: "GET",
+				headers: {
+					Accept: "application/json",
+					Authorization: `Bearer ${process.env.BLING_ACCESS_CODE}`,
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const json = await response.json();
+
+			return json.data;
+		} catch (error) {
+			throw error;
+		}
+	},
+
+	/*
+		https://developer.bling.com.br/referencia#/Produtos/get_produtos__idProduto_
+	*/
+	getProdutosByID: async (idProduto: number): Promise<ProdutosDadosDTO> => {
+		try {
+			const url = `${process.env.BLING_URL}/produtos/${idProduto}`;
+
+			const response = await fetch(url, {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					Authorization: `Bearer ${process.env.BLING_ACCESS_CODE}`,
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const json = await response.json();
+
+			return json.data;
+		} catch (error) {
+			throw error;
+		}
+	},
+
+	/*	
+		https://developer.bling.com.br/referencia#/Produtos/patch_produtos__idProduto_
+	*/
+	updateProduto: async (parametrosAlterarProduto: ParametrosAlterarProduto) => {
+		try {
+			const parametros = Object.entries(parametrosAlterarProduto)
+				.map(([key, value]) => `${key}=${value}`)
+				.join("&");
+
+			const url = `${process.env.BLING_URL}/produtos?${parametros}`;
+
+			const response = await fetch(url, {
+				method: "PATCH",
 				headers: {
 					Accept: "application/json",
 					Authorization: `Bearer ${process.env.BLING_ACCESS_CODE}`,

@@ -1,16 +1,16 @@
 "use client";
 
-import {
-	ParametrosObterPedidosCompras,
-	fetchBuyOrderWithItensFromBling,
-	fetchBuyOrdersFromBling,
-	upsertBuyOrders,
-} from "@/app/lib/pedidos-de-compra";
-import { PedidoDeCompra } from "@/app/types/Escriva/pedido-de-compra";
+import { Produto } from "@/app/types/Escriva/produto";
 import { useState } from "react";
 import LoadingDots from "./loading";
+import {
+	ParametrosObterProdutos,
+	fetchProductFromBling,
+	fetchProductsFromBling,
+	upsertProducts,
+} from "@/app/lib/produtos";
 
-export default function UpdateBuyOrdersCard({
+export default function UpdateStockCard({
 	isSomeoneUpdating,
 	setSomeoneUpdating,
 }: {
@@ -18,45 +18,49 @@ export default function UpdateBuyOrdersCard({
 	setSomeoneUpdating: (isUpdating: boolean) => void;
 }) {
 	const [itsMeUpdating, setMeUpdating] = useState(false);
+
 	const [pagina, setPagina] = useState<number | undefined>(1);
+	const [estoque] = useState<Produto[] | undefined>(undefined);
 
 	const parametros = {
 		pagina: 1,
 		limite: 100,
-		idFornecedor: [16865141105, 16865110862, 17245617930],
-		valorSituacao: [0, 3],
+		criterio: 2, // 2 - Ativos
+		tipo: "V", // V - Variação
+		idCategoria: 10845310, // ID da categoria "Perfil de Alumínio"
 	};
 
-	async function updateBuyOrders(parametros: ParametrosObterPedidosCompras) {
-		setMeUpdating(true);
-		setSomeoneUpdating(true);
-
+	async function atualizarEstoque(parametros: ParametrosObterProdutos) {
 		parametros.pagina = 1;
 
-		const orders: PedidoDeCompra[] = [];
-		const ordersWithItens: PedidoDeCompra[] = [];
+		setSomeoneUpdating(true);
+		setMeUpdating(true);
+
+		const produtos: Produto[] = [];
 
 		try {
 			setPagina(parametros.pagina);
-			let response = await fetchBuyOrdersFromBling(parametros);
-			orders.push(...response);
+			let response = await fetchProductsFromBling(parametros);
+			produtos.push(...response);
 
 			while (response.length > 99) {
 				setPagina(parametros.pagina++);
-				response = await fetchBuyOrdersFromBling(parametros);
-				orders.push(...response);
-			}
-
-			for (const order of orders) {
-				const orderWithItens = await fetchBuyOrderWithItensFromBling(order.id);
-				ordersWithItens.push(orderWithItens);
+				response = await fetchProductsFromBling(parametros);
+				produtos.push(...response);
 			}
 
 			setPagina(undefined);
 
-			console.log(ordersWithItens);
+			for (const produto of produtos) {
+				const produtoDetalhado = await fetchProductFromBling(produto.id);
+				produto.peso = produtoDetalhado?.peso ?? null;
+				produto.precoVenda = produtoDetalhado?.precoVenda ?? null;
 
-			await upsertBuyOrders(ordersWithItens);
+				console.log("Produto montado:");
+				console.log(produto);
+			}
+
+			await upsertProducts(produtos);
 		} catch (error) {
 			throw error;
 		} finally {
@@ -69,7 +73,7 @@ export default function UpdateBuyOrdersCard({
 		<div className="w-full p-1 bg-blue-100 rounded-md items-center">
 			<div className="flex items-center p-2">
 				<span className="text-2xl font-medium flex-1 text-left center">
-					Pedidos de Compra
+					Produtos detalhados em Estoque
 				</span>
 				<span className="mr-2 text-right">
 					{itsMeUpdating ? (
@@ -85,7 +89,7 @@ export default function UpdateBuyOrdersCard({
 				<div
 					className="h-32 grid place-items-center hover:bg-blue-400 cursor-pointer rounded-md"
 					onClick={() => {
-						updateBuyOrders(parametros);
+						atualizarEstoque(parametros);
 					}}
 				>
 					Atualizar 🔄
@@ -98,6 +102,9 @@ export default function UpdateBuyOrdersCard({
 					) : (
 						<p>{pagina} páginas lidas.</p>
 					)}
+
+					<div>{estoque && <p>{estoque.length} produtos em estoque.</p>}</div>
+					<div>{estoque && <p>Salvando produtos...</p>}</div>
 				</div>
 			)}
 		</div>
