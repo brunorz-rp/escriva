@@ -187,16 +187,17 @@ export async function fetchProductFromBling(id: number): Promise<Produto> {
 	}
 }
 
-export type ParametrosAlterarProduto = {
-	idProduto: number;
-	produtosDadosDTO: ProdutosDadosDTO;
-};
+interface ComparacaoProduto extends Produto {
+	pesoLiquidoNovo: number;
+	precoNovo: number;
+}
 
-export async function updateProductFromBling(produto: ProdutosDadosDTO) {
+export async function updateProductFromBling(produto: ComparacaoProduto) {
 	try {
 		await BlingAPI.updateProduto({
-			idProduto: produto.id,
-			produtosDadosDTO: produto,
+			id: produto.id,
+			pesoLiquido: produto.pesoLiquidoNovo,
+			preco: produto.precoNovo,
 		});
 	} catch (error) {
 		throw error;
@@ -269,20 +270,23 @@ const BlingAPI = {
 	/*	
 		https://developer.bling.com.br/referencia#/Produtos/patch_produtos__idProduto_
 	*/
-	updateProduto: async (parametrosAlterarProduto: ParametrosAlterarProduto) => {
+	updateProduto: async (produto: ProdutosDadosDTO) => {
 		try {
-			const parametros = Object.entries(parametrosAlterarProduto)
-				.map(([key, value]) => `${key}=${value}`)
-				.join("&");
+			const { id, ...body } = produto;
 
-			const url = `${process.env.BLING_URL}/produtos?${parametros}`;
+			const url = `${process.env.BLING_URL}/produtos/${id}`;
+
+			console.log(JSON.stringify(body));
 
 			const response = await fetch(url, {
 				method: "PATCH",
+
 				headers: {
-					Accept: "application/json",
-					Authorization: `Bearer ${process.env.BLING_ACCESS_CODE}`,
+					"Accept": "application/json",
+					"Authorization": `Bearer ${process.env.BLING_ACCESS_CODE}`,
+					"Content-Type": "application/json",
 				},
+				body: JSON.stringify(body),
 			});
 
 			if (!response.ok) {

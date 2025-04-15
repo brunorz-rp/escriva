@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getProducts } from "../lib/produtos";
+import { getProducts, updateProductFromBling } from "../lib/produtos";
 import { Produto } from "../types/Escriva/produto";
 
 interface ComparacaoProduto extends Produto {
@@ -52,6 +52,13 @@ export default function Julio() {
 			console.log(
 				`Enviar ${produto.codigo} com peso ${produto.pesoLiquidoNovo} e preço ${produto.precoNovo}`
 			);
+			console.log(
+				`${produto.id} com peso ${produto.pesoLiquidoNovo} e preço ${produto.precoNovo}`
+			);
+
+			if (produto.id && produto.pesoLiquidoNovo && produto.precoNovo) {
+				updateProductFromBling(produto);
+			}
 		}
 	};
 
