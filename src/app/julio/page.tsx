@@ -89,7 +89,11 @@ export default function Julio() {
 				} else {
 					const pesoNaPlanilha: number = csvData[codigoPai];
 
-					produtoNoBling.pesoLiquidoNovo = pesoNaPlanilha;
+					if (!pesoNaPlanilha) {
+						produtoNoBling.pesoLiquidoNovo = 0;
+					} else {
+						produtoNoBling.pesoLiquidoNovo = pesoNaPlanilha;
+					}
 
 					const isSL = /^SL/.test(codigoPai);
 					const isVZ080 = /^VZ-080/.test(codigoPai);

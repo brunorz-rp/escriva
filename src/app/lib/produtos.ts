@@ -202,7 +202,7 @@ export async function updateProductFromBling(produto: ComparacaoProduto) {
 	} catch (error) {
 		throw error;
 	} finally {
-		await new Promise((resolve) => setTimeout(resolve, 3000));
+		await new Promise((resolve) => setTimeout(resolve, 1500));
 	}
 }
 
@@ -276,11 +276,11 @@ const BlingAPI = {
 
 			const url = `${process.env.BLING_URL}/produtos/${id}`;
 
+			console.log(JSON.stringify(url));
 			console.log(JSON.stringify(body));
 
 			const response = await fetch(url, {
 				method: "PATCH",
-
 				headers: {
 					"Accept": "application/json",
 					"Authorization": `Bearer ${process.env.BLING_ACCESS_CODE}`,
