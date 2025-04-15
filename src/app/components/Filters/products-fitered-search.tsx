@@ -1,6 +1,6 @@
 "use client";
 
-import { agruparVariacoesPorCor } from "@/app/lib/utils";
+import { getRecordsOfVariacoesPorCor } from "@/app/lib/utils";
 import { ProductRecords } from "@/app/types/Escriva/produto-pai";
 import { getProducts } from "@/app/lib/produtos";
 import { useEffect } from "react";
@@ -18,7 +18,7 @@ export default function ProductsFilteredSearch({
 	useEffect(() => {
 		const getFilteredProducts = async () => {
 			const filtered = await getProducts(filter);
-			const grouped = agruparVariacoesPorCor(filtered);
+			const grouped = getRecordsOfVariacoesPorCor(filtered);
 			setStock(grouped);
 		};
 		getFilteredProducts();

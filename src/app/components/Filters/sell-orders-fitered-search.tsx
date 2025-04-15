@@ -1,6 +1,6 @@
 "use client";
 
-import { agruparVariacoesPorCor } from "@/app/lib/utils";
+import { getRecordsOfVariacoesPorCor } from "@/app/lib/utils";
 import { ProductRecords } from "@/app/types/Escriva/produto-pai";
 import { getSellOrders } from "@/app/lib/pedidos-de-venda";
 import { useEffect } from "react";
@@ -21,7 +21,7 @@ export default function SellOrdersFilteredSearch({
 
 			const flattened = filtered.flatMap((order) => order.itens);
 
-			const grouped = agruparVariacoesPorCor(flattened);
+			const grouped = getRecordsOfVariacoesPorCor(flattened);
 
 			setStock(grouped);
 		};
