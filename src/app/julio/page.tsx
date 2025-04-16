@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getProducts, updateProductFromBling } from "../lib/produtos";
+import { getProducts } from "../lib/produtos";
 import { Produto } from "../types/Escriva/produto";
 
 interface ComparacaoProduto extends Produto {
