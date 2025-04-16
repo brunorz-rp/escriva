@@ -55,10 +55,6 @@ export default function Julio() {
 			console.log(
 				`${produto.id} com peso ${produto.pesoLiquidoNovo} e preço ${produto.precoNovo}`
 			);
-
-			if (produto.id && produto.pesoLiquidoNovo && produto.precoNovo) {
-				updateProductFromBling(produto);
-			}
 		}
 	};
 
