@@ -20,14 +20,16 @@
 		],
 		"paths": {
 			"@/*": ["./src/*"]
-		}
+		},
+		"types": ["node", "tailwindcss"]
 	},
 	"include": [
 		"next-env.d.ts",
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts",
-		"src/app/lib/sheets/authorization.ts"
-, "src/app/julio/parser.js"	],
+		"src/app/lib/sheets/authorization.ts",
+		"src/app/julio/parser.js"
+	],
 	"exclude": ["node_modules"]
 }

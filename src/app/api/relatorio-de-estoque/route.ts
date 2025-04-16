@@ -10,14 +10,14 @@ export async function GET(request: Request) {
 
 	const productsFromDB: Produto[] = await getProducts(codigo);
 
-	const csvContent = productsFromDB
-		.map((product) => `${product.codigo}, ${product.quantidade}`)
-		.join("\n");
+	const json = JSON.stringify(productsFromDB);
 
-	return new NextResponse(csvContent, {
+	return new NextResponse(json, {
+		status: 200,
 		headers: {
-			"Content-Type": "text/csv",
-			"Content-Disposition": 'attachment; filename="relatorio-de-saldo.csv"',
+			"Content-Type": "application/json",
+			"Content-Disposition": 'attachment; filename="relatorio-de-estoque.json"',
+			"Cache-Control": "no-store",
 		},
 	});
 }
