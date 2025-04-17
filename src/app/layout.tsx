@@ -1,4 +1,5 @@
 import "@/app/global.css";
+
 import { inter } from "@/app/fonts";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
