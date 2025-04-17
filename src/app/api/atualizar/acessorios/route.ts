@@ -24,7 +24,7 @@ export async function GET() {
 async function getBlingAuthCode() {
 	const randomState = Math.floor(Math.random() * 1e12).toString();
 
-	const url = `${process.env.BLING_URL}/oauth/authorize?response_type=code&client_id=${process.env.BLING_CLIENT_ID}&state=${randomState}`;
+	const url = `${process.env.BLING_API_URL}/oauth/authorize?response_type=code&client_id=${process.env.BLING_CLIENT_ID}&state=${randomState}`;
 
 	console.log("url");
 	console.log(url);

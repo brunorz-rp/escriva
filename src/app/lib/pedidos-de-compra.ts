@@ -113,7 +113,7 @@ const BlingAPI = {
 				.map(([key, value]) => `${key}=${value}`)
 				.join("&");
 
-			const url = `${process.env.BLING_URL}/pedidos/compras?${parametros}`;
+			const url = `${process.env.BLING_API_URL}/pedidos/compras?${parametros}`;
 
 			const response = await fetch(url, {
 				method: "GET",
@@ -140,7 +140,7 @@ const BlingAPI = {
 	*/
 	getPedidosComprasID: async (id: number) => {
 		try {
-			const url = `${process.env.BLING_URL}/pedidos/compras/${id}`;
+			const url = `${process.env.BLING_API_URL}/pedidos/compras/${id}`;
 
 			const response = await fetch(url, {
 				method: "GET",

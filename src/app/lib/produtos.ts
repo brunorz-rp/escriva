@@ -218,7 +218,7 @@ const BlingAPI = {
 				.map(([key, value]) => `${key}=${value}`)
 				.join("&");
 
-			const url = `${process.env.BLING_URL}/produtos?${parametros}`;
+			const url = `${process.env.BLING_API_URL}/produtos?${parametros}`;
 
 			const response = await fetch(url, {
 				method: "GET",
@@ -245,7 +245,7 @@ const BlingAPI = {
 	*/
 	getProdutosByID: async (idProduto: number): Promise<ProdutosDadosDTO> => {
 		try {
-			const url = `${process.env.BLING_URL}/produtos/${idProduto}`;
+			const url = `${process.env.BLING_API_URL}/produtos/${idProduto}`;
 
 			const response = await fetch(url, {
 				method: "GET",
@@ -274,7 +274,7 @@ const BlingAPI = {
 		try {
 			const { id, ...body } = produto;
 
-			const url = `${process.env.BLING_URL}/produtos/${id}`;
+			const url = `${process.env.BLING_API_URL}/produtos/${id}`;
 
 			console.log(JSON.stringify(url));
 			console.log(JSON.stringify(body));
