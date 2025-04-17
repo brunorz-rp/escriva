@@ -7,11 +7,12 @@ export async function GET(request: Request) {
 	const error = searchParams.get("error");
 
 	if (error) {
-		return NextResponse.redirect(`/error?message=${encodeURIComponent(error)}`);
+		console.log(error);
+		// return NextResponse.redirect(`/error?message=${encodeURIComponent(error)}`);
 	}
 
 	if (!code) {
-		return NextResponse.redirect("/error?message=No authorization code");
+		// return NextResponse.redirect("/error?message=No authorization code");
 	}
 
 	try {
@@ -34,13 +35,16 @@ export async function GET(request: Request) {
 			}
 		);
 
+		console.log("tokenResponse");
+		console.log(tokenResponse);
+
 		const tokens = await tokenResponse.json();
 		tokens.created_on = new Date();
 
 		// Store tokens securely (e.g., database)
 		await storeTokens(tokens);
 
-		return NextResponse.json({ message: "sucesso" });
+		return NextResponse.json({ tokens: tokenResponse.json() });
 	} catch (err) {
 		const error: string = err!.toString();
 		return NextResponse.json({
