@@ -1,4 +1,4 @@
-export async function getBlingToken(code: string) {
+export async function GET(code: string) {
 	try {
 	  // 1. Encode credentials
 	  const credentials = Buffer.from(
