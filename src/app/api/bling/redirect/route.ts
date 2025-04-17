@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
 	const code = searchParams.get("code");
@@ -5,12 +7,12 @@ export async function GET(request: Request) {
 
 	try {
 		if (error) {
-			throw Error(error);
 			// return NextResponse.redirect(`/error?message=${encodeURIComponent(error)}`);
+			return NextResponse.json(error);
 		}
 
 		if (!code) {
-			throw Error("NOooo Coode");
+			return NextResponse.json({ error: "no code" });
 		}
 
 		// 1. Encode credentials
@@ -44,7 +46,9 @@ export async function GET(request: Request) {
 			throw new Error(`Bling API Error: ${errorData.error || "Unknown error"}`);
 		}
 
-		return await response.json();
+		const tokens = await response.json();
+
+		return NextResponse.json({ tokens: tokens});		
 	} catch (error) {
 		console.error("Token exchange failed:", error);
 		throw new Error("Failed to exchange authorization code for token");
