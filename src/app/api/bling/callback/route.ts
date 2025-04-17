@@ -28,10 +28,11 @@ export async function GET(request: Request) {
 					"Content-Type": "application/x-www-form-urlencoded",
 					"Authorization": `Basic ${credentials}`,
 				},
-				body: JSON.stringify({
+				body: new URLSearchParams({
 					grant_type: "authorization_code",
-					code: code,
-				}),
+					code: code!,
+					redirect_uri: process.env.BLING_REDIRECT_URI!,
+				}).toString(),
 			}
 		);
 
