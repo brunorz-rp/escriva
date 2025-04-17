@@ -40,10 +40,12 @@ export async function GET(request: Request) {
 		// Store tokens securely (e.g., database)
 		await storeTokens(tokens);
 
-		return NextResponse.redirect("/success");
+		return NextResponse.json({ message: "sucesso" });
 	} catch (err) {
 		const error: string = err!.toString();
-		return NextResponse.redirect(`/error?message=${encodeURIComponent(error)}`);
+		return NextResponse.json({
+			message: `/error?message=${encodeURIComponent(error)}`,
+		});
 	}
 }
 
