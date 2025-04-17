@@ -1,4 +1,3 @@
-// app/api/bling/callback/route.ts
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -31,7 +30,7 @@ export async function GET(request: Request) {
 				body: new URLSearchParams({
 					grant_type: "authorization_code",
 					code: code!,
-					redirect_uri: process.env.BLING_REDIRECT_URI!,
+					redirect_uri: "https://robertop.vercel.app/",
 				}).toString(),
 			}
 		);
