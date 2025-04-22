@@ -28,9 +28,20 @@ export async function updateTokens({ tokens }: Tokens) {
 	}
 }
 
-export async function getTokens() {
+export async function getAccessCode() {
 	try {
-		await sql`SELECT * FROM authorization`;
+		const tokensList = await sql<
+			Tokens[]
+		>`SELECT * FROM authorization WHERE token_id = 0`;
+
+		const uniqueToken = tokensList[0];
+		if (!uniqueToken) {
+			throw Error("No tokens on database");
+		}
+
+		const { tokens } = uniqueToken;
+
+		return tokens.access_token;
 	} catch (error) {
 		throw error;
 	}

@@ -1,6 +1,7 @@
 "use server";
 
 import postgres from "postgres";
+import { getAccessCode } from "./bling/authorization";
 import {
 	ProdutosDadosBaseDTO,
 	ProdutosDadosDTO,
@@ -214,6 +215,7 @@ const BlingAPI = {
 		parametrosObterProdutos: ParametrosObterProdutos
 	): Promise<ProdutosDadosBaseDTO[]> => {
 		try {
+			const accessCode: string = await getAccessCode();
 			const parametros = Object.entries(parametrosObterProdutos)
 				.map(([key, value]) => `${key}=${value}`)
 				.join("&");
@@ -224,7 +226,7 @@ const BlingAPI = {
 				method: "GET",
 				headers: {
 					Accept: "application/json",
-					Authorization: `Bearer ${process.env.BLING_ACCESS_CODE}`,
+					Authorization: `Bearer ${accessCode}`,
 				},
 			});
 

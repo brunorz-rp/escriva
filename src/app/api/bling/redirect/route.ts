@@ -1,6 +1,6 @@
 import {
 	getAuthorizationTokens,
-	insertTokens,
+	updateTokens,
 } from "@/app/lib/bling/authorization";
 import { NextResponse } from "next/server";
 
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 
 		const tokens = await getAuthorizationTokens(code);
 
-		await insertTokens(tokens);
+		await updateTokens(tokens);
 
 		return NextResponse.json({ message: "Autorizado." });
 	} catch (error) {
