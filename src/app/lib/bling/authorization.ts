@@ -5,7 +5,7 @@ import { Tokens } from "../../types/Bling/authorization";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
-export async function updateTokens({ tokens }: Tokens) {
+export async function updateTokens(tokens: Tokens) {
 	const now = new Date();
 	const expires_on = new Date(now.toUTCString());
 	expires_on.setSeconds(expires_on.getSeconds() + tokens.expires_in);
