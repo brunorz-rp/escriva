@@ -39,7 +39,7 @@ export async function getAccessCode() {
 			throw Error("No tokens on database");
 		}
 
-		const { tokens } = uniqueToken;
+		const tokens = uniqueToken;
 
 		return tokens.access_token;
 	} catch (error) {
