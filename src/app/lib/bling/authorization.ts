@@ -13,7 +13,7 @@ export async function updateTokens(tokens: Tokens) {
 
 		const result = await sql`
             UPDATE
-                authorization
+                "authorization"
             SET
                 access_token = ${tokens.access_token},
                 expires_on = ${expires_on},
