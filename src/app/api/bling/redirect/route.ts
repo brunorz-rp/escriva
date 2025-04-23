@@ -15,20 +15,14 @@ export async function GET(request: Request) {
 		}
 
 		const tokens = await getAuthorizationTokens(code);
-		console.log("tokens");
-		console.log(tokens);
 
 		const updatedTokens = await updateTokens(tokens);
 
 		console.log("tokens updated");
 		console.log(updatedTokens);
 
-		return NextResponse.json({ message: "Autorizado." });
+		return NextResponse.json({ tokens: updatedTokens });
 	} catch (error) {
-		console.log(error);
-		return NextResponse.json({
-			message: "Failed to exchange authorization code for token",
-			error: error,
-		});
+		return NextResponse.json({ error: error });
 	}
 }
