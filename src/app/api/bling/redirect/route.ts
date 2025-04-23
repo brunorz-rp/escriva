@@ -18,10 +18,10 @@ export async function GET(request: Request) {
 		console.log("tokens");
 		console.log(tokens);
 
-		await updateTokens(tokens);
+		const updatedTokens = await updateTokens(tokens);
 
 		console.log("tokens updated");
-		console.log(tokens);
+		console.log(updatedTokens);
 
 		return NextResponse.json({ message: "Autorizado." });
 	} catch (error) {

@@ -6,23 +6,25 @@ import { Tokens } from "../../types/Bling/authorization";
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 export async function updateTokens(tokens: Tokens) {
-	const now = new Date();
-	const expires_on = new Date(now.toUTCString());
-	expires_on.setSeconds(expires_on.getSeconds() + tokens.expires_in);
-
 	try {
+		const now = new Date();
+		const expires_on = new Date(now.toUTCString());
+		expires_on.setSeconds(expires_on.getSeconds() + tokens.expires_in);
+
 		await sql`
-            INSERT INTO
+            UPDATE
                 authorization
             SET
                 access_token = ${tokens.access_token},
                 expires_on = ${expires_on}
                 token_type = ${tokens.token_type}
                 scope = ${tokens.scope}
-                refresh_token = ${tokens.refresh_token},
+                refresh_token = ${tokens.refresh_token}
             WHERE
                 id = 0
-            `;
+			RETURNING
+				*
+		`;
 	} catch (error) {
 		throw error;
 	}
