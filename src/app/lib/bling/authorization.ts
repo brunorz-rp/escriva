@@ -28,6 +28,7 @@ export async function updateTokens(tokens: Tokens) {
 
 		return result;
 	} catch (error) {
+		console.log(error);
 		throw error;
 	}
 }
