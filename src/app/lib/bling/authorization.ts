@@ -58,10 +58,10 @@ export async function getAuthorizationTokens(code: string): Promise<Tokens> {
 			`${process.env.BLING_CLIENT_ID}:${process.env.BLING_CLIENT_SECRET}`
 		).toString("base64");
 
-		const params = new URLSearchParams();
-		params.append("grant_type", "authorization_code");
-		params.append("code", code!);
-		params.append("redirect_uri", process.env.BLING_REDIRECT_URI!);
+		const body = new URLSearchParams();
+		body.append("grant_type", "authorization_code");
+		body.append("code", code);
+		body.append("redirect_uri", process.env.BLING_REDIRECT_URI!);
 
 		const response = await fetch(url, {
 			method: "POST",
@@ -69,7 +69,7 @@ export async function getAuthorizationTokens(code: string): Promise<Tokens> {
 				"Content-Type": "application/x-www-form-urlencoded",
 				"Authorization": `Basic ${credentials}`,
 			},
-			body: params.toString(),
+			body: body.toString(),
 		});
 
 		if (!response.ok) {
