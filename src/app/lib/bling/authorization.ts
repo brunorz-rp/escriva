@@ -21,7 +21,7 @@ export async function updateTokens(tokens: Tokens) {
                 scope = ${tokens.scope},
                 refresh_token = ${tokens.refresh_token}
             WHERE
-                id = 0
+                token_id = 21042025
 			RETURNING
 				*
 		`;
