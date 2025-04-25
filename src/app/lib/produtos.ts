@@ -1,7 +1,7 @@
 "use server";
 
 import postgres from "postgres";
-import { getAccessCode } from "./bling/authorization";
+import { getValidAccessCode } from "./bling/authorization";
 import {
 	ProdutosDadosBaseDTO,
 	ProdutosDadosDTO,
@@ -9,7 +9,7 @@ import {
 import {
 	ProdutoEntity,
 	converterProduto,
-} from "../types/Escriva/database/produto-entity";
+} from "../types/Escriva/database/produto";
 import {
 	Produto,
 	converterProdutoEntity,
@@ -20,40 +20,6 @@ import {
 const BATCH_SIZE = 1000; // Adjust based on your DB performance
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
-
-export async function insertProduct(produto: Produto) {
-	try {
-		await sql`
-			INSERT INTO produtos (
-				id, id_pai,
-				codigo, codigo_pai,
-				cor, estoque,
-				preco_custo, preco_venda,
-				nome
-			)
-			VALUES (
-				${produto.id}, ${produto?.idPai},
-				${produto.codigo}, ${produto?.codigoPai},
-				${produto?.cor}, ${produto?.quantidade},
-				${produto?.precoCusto}, ${produto?.precoVenda},
-				${produto?.nome}
-			)
-			ON CONFLICT
-				(id)
-			DO UPDATE SET
-				id_pai = EXCLUDED.id_pai,
-				codigo = EXCLUDED.codigo,
-				codigo_pai = EXCLUDED.codigo_pai,
-				cor = EXCLUDED.cor,
-				estoque = EXCLUDED.estoque,
-				preco_custo = EXCLUDED.preco_custo,
-				preco_venda = EXCLUDED.preco_venda,
-				nome = EXCLUDED.nome
-			`;
-	} catch (error) {
-		throw error;
-	}
-}
 
 export async function getProducts(filter?: string): Promise<Produto[]> {
 	try {
@@ -122,15 +88,16 @@ export async function upsertProducts(produtos: Produto[]) {
 					ON CONFLICT
 						(id)
 					DO UPDATE SET
-						id_pai = EXCLUDED.id_pai,
-						codigo = EXCLUDED.codigo,
-						codigo_pai = EXCLUDED.codigo_pai,
-						cor = EXCLUDED.cor,
-						estoque = EXCLUDED.estoque,
-						peso = EXCLUDED.peso,
-						preco_custo = EXCLUDED.preco_custo,
-						preco_venda = EXCLUDED.preco_venda,
-						nome = EXCLUDED.nome
+						id_pai 	= COALESCE(EXCLUDED.id_pai, produtos.id_pai),
+						codigo	= COALESCE(EXCLUDED.codigo, produtos.codigo),
+						codigo_pai	= COALESCE(EXCLUDED.codigo_pai, produtos.codigo_pai),
+						cor			= COALESCE(EXCLUDED.cor, produtos.cor),
+						estoque		= COALESCE(EXCLUDED.estoque, produtos.estoque),
+						peso		= COALESCE(EXCLUDED.peso, produtos.peso),
+						preco_custo	= COALESCE(EXCLUDED.preco_custo, produtos.preco_custo),
+						preco_venda = COALESCE(EXCLUDED.preco_venda, produtos.preco_venda),
+						nome 		= COALESCE(EXCLUDED.nome, produtos.nome),
+						id_categoria= COALESCE(EXCLUDED.id_categoria, produtos.id_categoria)
 				`;
 			});
 		}
@@ -164,8 +131,6 @@ export async function fetchProductsFromBling(
 	parameters: ParametrosObterProdutos
 ): Promise<Produto[]> {
 	try {
-		await new Promise((resolve) => setTimeout(resolve, 2000));
-
 		const produtos = await BlingAPI.getProdutos(parameters);
 
 		return produtos.map((produtoDadosBaseDTO: ProdutosDadosBaseDTO) =>
@@ -173,6 +138,8 @@ export async function fetchProductsFromBling(
 		);
 	} catch (error) {
 		throw error;
+	} finally {
+		await new Promise((resolve) => setTimeout(resolve, 3000));
 	}
 }
 
@@ -203,7 +170,7 @@ export async function updateProductFromBling(produto: ComparacaoProduto) {
 	} catch (error) {
 		throw error;
 	} finally {
-		await new Promise((resolve) => setTimeout(resolve, 1500));
+		await new Promise((resolve) => setTimeout(resolve, 3000));
 	}
 }
 
@@ -215,7 +182,6 @@ const BlingAPI = {
 		parametrosObterProdutos: ParametrosObterProdutos
 	): Promise<ProdutosDadosBaseDTO[]> => {
 		try {
-			const accessCode: string = await getAccessCode();
 			const parametros = Object.entries(parametrosObterProdutos)
 				.map(([key, value]) => `${key}=${value}`)
 				.join("&");
@@ -226,7 +192,7 @@ const BlingAPI = {
 				method: "GET",
 				headers: {
 					Accept: "application/json",
-					Authorization: `Bearer ${accessCode}`,
+					Authorization: `Bearer ${await getValidAccessCode()}`,
 				},
 			});
 
@@ -253,7 +219,7 @@ const BlingAPI = {
 				method: "GET",
 				headers: {
 					Accept: "application/json",
-					Authorization: `Bearer ${process.env.BLING_ACCESS_CODE}`,
+					Authorization: `Bearer ${await getValidAccessCode()}`,
 				},
 			});
 
@@ -285,7 +251,7 @@ const BlingAPI = {
 				method: "PATCH",
 				headers: {
 					"Accept": "application/json",
-					"Authorization": `Bearer ${process.env.BLING_ACCESS_CODE}`,
+					"Authorization": `Bearer ${await getValidAccessCode()}`,
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(body),

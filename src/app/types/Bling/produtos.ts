@@ -1,17 +1,20 @@
 import { EstoqueGetAllResponseDTO } from "./estoque";
 import { ProdutoFornecedorDTO } from "./fornecedor";
 
+/*	
+	https://developer.bling.com.br/referencia#/Produtos/get_produtos
+*/
 export type ProdutosDadosBaseDTO = {
 	id: number;
 	idProdutoPai?: number;
-	codigo: string;
-	nome: string;
+	codigo?: string;
+	nome?: string;
 	preco?: number;
 	precoCusto?: number;
 	estoque?: EstoqueGetAllResponseDTO;
-	tipo: string;
-	situacao: string;
-	formato: string;
+	tipo?: string;
+	situacao?: string;
+	formato?: string;
 	descricaoCurta?: string;
 	imagemURL?: string;
 };
@@ -55,6 +58,9 @@ export type ProdutosDadosDTOEspecial = {
 	variacoes?: ProdutosVariacaoDTO;
 };
 
+/*	
+	https://developer.bling.com.br/referencia#/Produtos/get_produtos__idProduto_
+*/
 export type ProdutosDadosDTO = {
 	id: number;
 	nome?: string;

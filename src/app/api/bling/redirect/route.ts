@@ -10,19 +10,23 @@ export async function GET(request: Request) {
 		const code = searchParams.get("code");
 
 		if (!code) {
-			// return NextResponse.redirect(`/error?message=${encodeURIComponent(error)}`);
-			return NextResponse.json({ error: "no code" });
+			return NextResponse.json(
+				{ error: "Missing authorization code" },
+				{ status: 400 }
+			);
 		}
 
-		const tokens = await getAuthorizationTokens(code);
+		const payload = {
+			grant_type: "authorization_code",
+			code: code,
+		};
 
-		const updatedTokens = await updateTokens(tokens);
+		const tokens = await getAuthorizationTokens(payload);
 
-		console.log("tokens updated");
-		console.log(updatedTokens);
+		await updateTokens(tokens);
 
-		return NextResponse.json({ tokens: updatedTokens });
+		return NextResponse.json({ message: "ok" });
 	} catch (error) {
-		return NextResponse.json({ error: error });
+		return NextResponse.json({ error: error }, { status: 500 });
 	}
 }

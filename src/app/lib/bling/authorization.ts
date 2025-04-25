@@ -2,6 +2,7 @@
 
 import postgres from "postgres";
 import { Tokens } from "../../types/Bling/authorization";
+import { TokensEntity } from "@/app/types/Escriva/authorization";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -33,20 +34,44 @@ export async function updateTokens(tokens: Tokens) {
 	}
 }
 
-export async function getAccessCode() {
+export async function getValidAccessCode() {
 	try {
-		const tokensList = await sql<
-			Tokens[]
-		>`SELECT * FROM authorization WHERE token_id = 0`;
+		const tokens = await getTokens();
 
-		const uniqueToken = tokensList[0];
-		if (!uniqueToken) {
-			throw Error("No tokens on database");
+		const now = new Date(new Date().toUTCString());
+
+		const isAccessCodeValid = now < tokens.expires_on;
+
+		if (!isAccessCodeValid) {
+			const payload = {
+				grant_type: "refresh_token",
+				refresh_token: tokens.refresh_token,
+			};
+
+			const refreshedTokens = await getAuthorizationTokens(payload);
+
+			await updateTokens(refreshedTokens);
+
+			return refreshedTokens.access_token;
 		}
 
-		const tokens = uniqueToken;
-
 		return tokens.access_token;
+	} catch (error) {
+		throw error;
+	}
+}
+
+async function getTokens(): Promise<TokensEntity> {
+	try {
+		const tokens = await sql<
+			TokensEntity[]
+		>`SELECT * FROM "authorization" WHERE token_id = 21042025`;
+
+		if (tokens.length > 0) {
+			return tokens[0];
+		}
+
+		throw Error("Couldn't find any token on database.");
 	} catch (error) {
 		throw error;
 	}
@@ -55,7 +80,9 @@ export async function getAccessCode() {
 /*	
     https://developer.bling.com.br/aplicativos#fluxo-de-autorização
 */
-export async function getAuthorizationTokens(code: string): Promise<Tokens> {
+export async function getAuthorizationTokens(
+	bodyMembers: Record<string, string>
+): Promise<Tokens> {
 	try {
 		const url = `${process.env.BLING_API_URL}/oauth/token`;
 
@@ -64,8 +91,9 @@ export async function getAuthorizationTokens(code: string): Promise<Tokens> {
 		).toString("base64");
 
 		const body = new URLSearchParams();
-		body.append("grant_type", "authorization_code");
-		body.append("code", code);
+		for (const [key, value] of Object.entries(bodyMembers)) {
+			body.append(key, value);
+		}
 		body.append("redirect_uri", process.env.BLING_REDIRECT_URI!);
 
 		const response = await fetch(url, {
@@ -78,6 +106,7 @@ export async function getAuthorizationTokens(code: string): Promise<Tokens> {
 		});
 
 		if (!response.ok) {
+			console.log(response);
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
 

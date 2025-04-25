@@ -1,6 +1,8 @@
+"use server";
+
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function authorize() {
 	const url = new URL(`${process.env.BLING_API_URL}/oauth/authorize`);
 
 	url.searchParams.append("response_type", "code");

@@ -53,8 +53,8 @@ export default function UpdateStockCard({
 
 			for (const produto of produtos) {
 				const produtoDetalhado = await fetchProductFromBling(produto.id);
-				produto.peso = produtoDetalhado?.peso ?? null;
-				produto.precoVenda = produtoDetalhado?.precoVenda ?? null;
+				produto.peso = produtoDetalhado?.peso ?? undefined;
+				produto.precoVenda = produtoDetalhado?.precoVenda ?? undefined;
 
 				console.log("Produto montado:");
 				console.log(produto);
