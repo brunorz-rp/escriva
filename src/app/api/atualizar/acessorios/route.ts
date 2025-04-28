@@ -10,29 +10,59 @@ export async function GET() {
 		idCategoria: 10764347, // ID da categoria "Acessórios"
 	};
 
-	try {
-		const produtosDadosBaseDTO: Produto[] = [];
+	const encoder = new TextEncoder();
 
-		let response = await fetchProductsFromBling(parametros);
-		produtosDadosBaseDTO.push(...response);
+	const stream = new ReadableStream({
+		async start(controller) {
+			const pushChunk = (chunk: string) => {
+				controller.enqueue(encoder.encode(`${JSON.stringify(chunk)}\n`));
+			};
 
-		while (response.length > 99) {
-			parametros.pagina++;
-			response = await fetchProductsFromBling(parametros);
-			produtosDadosBaseDTO.push(...response);
-		}
+			try {
+				const produtosDadosBaseDTO: Produto[] = [];
 
-		produtosDadosBaseDTO
-			.filter((produto: Produto) => produto.idPai === undefined)
-			.forEach((produto) => {
-				produto.idCategoria = parametros.idCategoria;
-			});
+				pushChunk(`Lendo página ${parametros.pagina}...`);
+				let response = await fetchProductsFromBling(parametros);
+				produtosDadosBaseDTO.push(...response);
+				pushChunk(`${produtosDadosBaseDTO.length} produtos encontrados`);
 
-		await upsertProducts(produtosDadosBaseDTO);
+				while (response.length > 99) {
+					parametros.pagina++;
+					pushChunk(`Lendo página ${parametros.pagina}...`);
+					response = await fetchProductsFromBling(parametros);
+					produtosDadosBaseDTO.push(...response);
+					pushChunk(`${produtosDadosBaseDTO.length} produtos encontrados`);
+				}
 
-		return NextResponse.json({ mensagem: `Acessórios atualizados.` });
-	} catch (error) {
-		console.log(error);
-		return NextResponse.json({ error: `${error}` });
-	}
+				pushChunk(
+					`preparando ${produtosDadosBaseDTO.length} acessórios para upsert no banco de dados...`
+				);
+
+				produtosDadosBaseDTO
+					.filter((produto: Produto) => produto.idPai === undefined)
+					.forEach((produto) => {
+						produto.idCategoria = parametros.idCategoria;
+					});
+
+				pushChunk(`realizando operação...`);
+
+				await upsertProducts(produtosDadosBaseDTO);
+
+				pushChunk(`acessórios atualizados.`);
+
+				return NextResponse.json({ mensagem: `Acessórios atualizados.` });
+			} catch (error) {
+				pushChunk(String(error));
+			} finally {
+				controller.close();
+			}
+		},
+	});
+
+	return new NextResponse(stream, {
+		headers: {
+			"Content-Type": "application/x-ndjson",
+			"Transfer-Encoding": "chunked",
+		},
+	});
 }
