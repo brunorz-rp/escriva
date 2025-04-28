@@ -34,7 +34,7 @@ export async function updateTokens(tokens: Tokens) {
 	}
 }
 
-export async function getValidAccessCode() {
+export async function getValidAccessCode(): Promise<string> {
 	try {
 		const tokens = await getTokens();
 
@@ -61,7 +61,7 @@ export async function getValidAccessCode() {
 	}
 }
 
-async function getTokens(): Promise<TokensEntity> {
+export async function getTokens(): Promise<TokensEntity> {
 	try {
 		const tokens = await sql<
 			TokensEntity[]

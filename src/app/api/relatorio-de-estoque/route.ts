@@ -6,11 +6,10 @@ export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
 
 	const codigo = searchParams.get("codigoPai") ?? undefined;
-	//const cor = searchParams.get('cor');
 
-	const productsFromDB: Produto[] = await getProducts(codigo);
+	const products: Produto[] = await getProducts(codigo);
 
-	const json = JSON.stringify(productsFromDB);
+	const json = JSON.stringify(products);
 
 	return new NextResponse(json, {
 		status: 200,
